@@ -1,0 +1,51 @@
+#summary My additions to pyplot
+
+= Introduction =
+
+One could use matplotlib but sometimes, pyplot will do just fine... although a few tweaks here and there might be necessary. I thought I might as well publish all the tweaks in my very own (almost certainly useless) version of pyplot called... ezplot!
+
+
+= Details =
+
+Latest addition is antialiasing, which uses the wx.GCDC class.
+
+Result is nice antialiased curves, but for anything more involved than a few hundred points, you'll be  better off with matplotlib. Yes, it's that slow... Which means, try the 25000 points demo (Draw4) at your own risk!  Having said that, I noticed that Ubuntu is faster than XP, although XP doesn't try to antialias vertical / horizontal lines (see screenshots below). This will require more testing I guess.
+
+This is how I did it (using the AlphaDrawing demo as a template):
+
+Where needed, I replaced
+
+{{{
+        if dc == None:
+            # sets new dc and clears it
+            dc = wx.BufferedDC(wx.ClientDC(self.canvas), self._Buffer)
+            dc.Clear()
+}}}
+with
+{{{
+        if dc == None:
+            # sets new dc and clears it
+            pdc = wx.BufferedDC(wx.ClientDC(self.canvas), self._Buffer)
+            pdc.Clear()
+
+            try:
+                dc = wx.GCDC(pdc)
+            except:
+                dc = pdc
+}}}
+Now. This probably can be explored a little further:
+  * replace the current rubberbox with a nice alpha blended one.
+  * a flag to trigger the antialiased behaviour? Check the number of points?
+  * only tested this in Windows and Linux/Ubuntu so far, so any compatibility reports welcome!
+
+Screenshots. Here is an antialiased ezplot (compared to the normal plot)
+
+[http://ezwidgets.googlecode.com/svn/pics/ezplot.png] [http://ezwidgets.googlecode.com/svn/pics/plot.png]
+
+And in ezplot.py, demo 8 (Draw8) shows error bars:
+
+[http://ezwidgets.googlecode.com/svn/pics/ezplot_errorbars.png]
+
+Code available here: [http://ezwidgets.googlecode.com/svn/trunk/ezplot/]
+  * [http://ezwidgets.googlecode.com/svn/trunk/ezplot/plot.py plot.py] only antialiasing
+  * [http://ezwidgets.googlecode.com/svn/trunk/ezplot/ezplot.py ezplot.py] more of my changes

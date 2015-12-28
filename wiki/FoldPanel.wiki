@@ -1,0 +1,21 @@
+#summary Foldable panels (XP style)
+= Introduction =
+
+I like the way foldable panels look in Windows XP so I thought I'd have a go at making something similar for wxPython.
+
+= Screenshot =
+The screenshot on the right shows what happens when the fold panel is narrower than the width of the title.
+
+[http://ezwidgets.googlecode.com/svn/pics/foldpanel.png] [http://ezwidgets.googlecode.com/svn/pics/foldpanel_narrow.png]
+
+= Details =
+
+There are a few problems in Ubuntu. I'll have a go at fixing the code when I get a chance. Works about right in Windows.
+
+= Todo =
+
+Would be nice to check the length of the panel title to change the string from
+
+_This is a long title_ to _This..._ like the window title in the screenshot. At the moment, if the fold panel is narrower than the title, wxPython will try and split the title on multiple rows (not as pretty as I'd like it to be).
+
+Also, check the code with wxPython 2.8.9.1, not sure the code behaves in the right way...

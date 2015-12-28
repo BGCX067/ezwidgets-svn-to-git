@@ -1,0 +1,11 @@
+#summary Polling a serial mouse with Python
+
+= Introduction =
+
+Not a wxPython widget, but I thought someone still might need to do something like this. Polls a serial mouse for changes (buttons, direction). 
+
+= Details =
+
+The source code just follows the serial mouse protocol and returns X,Y,buttons states
+
+*TODO* Need more details...

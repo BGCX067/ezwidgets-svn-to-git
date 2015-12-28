@@ -1,0 +1,52 @@
+#summary Ideas on the JessyInk Inkscape extension
+
+= Introduction =
+
+A page about the [https://launchpad.net/jessyink JessyInk] extension. Nothing exciting here, just some random ideas I thought might be useful, and then had great fun implementing.
+
+= !JessyInk navigation =
+
+This section is still under heavy development. See [http://code.google.com/p/jessyink/wiki/mousenav mousenav] and [http://code.google.com/p/jessyink/wiki/keyboardnav keyboardnav] if you have any comments.
+
+= Titles =
+
+Would be nice to be able to set slides titles (code tentatively scheduled for revision 1.3.0). Hannes Hochreiner had a go, and his current effort works in Safari but not in Opera or Firefox. No crashes though, which is always a bonus!
+
+Hannes's work can be found in the [https://code.launchpad.net/~hannes-hochreiner/jessyink/set-page-title set-page-title] branch. Latest idea is to
+
+  _implement page titles using title tags in the svg tag. Works in Safari, but not in !FireFox and Opera. However, does not cause error, when it fails._
+
+I tried using a
+{{{
+<title id='title'>This is the title</title>
+}}}
+tag in the SVG document, which displays a title, but I can't seem to be able to change it. My idea was to define a
+{{{
+var TITLE = document.getElementById(&quot;title&quot;);
+}}}
+and then maybe use a
+{{{
+function update(e)
+{
+    TITLE.data = slides[activeSlide][&quot;label&quot;];
+}
+}}}
+
+Like I said... just an idea :-)
+
+= My code so far=
+
+My latest code is now hosted at the [https://code.launchpad.net/jessyink JessyInk repository].
+
+  * [https://code.launchpad.net/~ezindy/jessyink/ui-additions JessyInk ui-addtions]
+
+= Latest presentation =
+
+Here is a [http://bazaar.launchpad.net/%7Eezindy/jessyink/ui-additions/download/ezindy%40gmail.com-20090525222032-22qn2xujsabdylwt/jessyink.svg-20090525100919-1x2qp1xpkkio63al-1/JessyInk.svg presentation] demonstrating the new navigation.
+
+= Conclusion =
+
+This concludes my !JessyInk effort. If you would like to leave a message, I'll be glad to read it. Code reviews / contributions / ideas are most welcome. Hopefully in a couple of weeks, the new (working) additions will be merged in !JessyInk.
+
+Regards,
+Egor

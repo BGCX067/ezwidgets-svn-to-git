@@ -1,0 +1,88 @@
+<?xml version="1.0" ?>
+<resource>
+  <object class="wxFrame" name="MainFrame">
+    <title>Simple calculator</title>
+    <centered>1</centered>
+    <style/>
+    <object class="wxMenuBar" name="MenuBar">
+      <object class="wxMenu" name="OperationMeu">
+        <label>Operations</label>
+        <object class="wxMenuItem" name="AddMenuItem">
+          <label>&amp;Add</label>
+          <accel>Ctrl-A</accel>
+          <help>Add second arg to the first arg.</help>
+          <XRCED>
+            <events>EVT_MENU</events>
+          </XRCED>
+        </object>
+        <object class="wxMenuItem" name="SubtractMenuItem">
+          <label>&amp;Subtract</label>
+          <accel>Ctrl-S</accel>
+          <help>Subtract second arg from the first arg.</help>
+          <XRCED>
+            <events>EVT_MENU</events>
+          </XRCED>
+        </object>
+        <object class="separator"/>
+        <object class="wxMenuItem" name="MultiplyMenuItem">
+          <label>&amp;Multiply</label>
+          <accel>Ctrl-M</accel>
+          <help>Multiply first arg by second arg</help>
+          <XRCED>
+            <events>EVT_MENU</events>
+          </XRCED>
+        </object>
+        <object class="wxMenuItem" name="DivideMenuItem">
+          <label>&amp;Divide</label>
+          <accel>Ctrl-D</accel>
+          <help>Divide first arg by second arg.</help>
+          <XRCED>
+            <events>EVT_MENU</events>
+          </XRCED>
+        </object>
+      </object>
+    </object>
+  </object>
+  
+  <object class="wxPanel" name="MainPanel">
+      
+    <object class="wxFlexGridSizer">
+      <object class="sizeritem">
+        <object class="wxStaticText">
+          <label>First arg:</label>
+        </object>
+        <flag>wxALIGN_CENTRE_VERTICAL</flag>
+      </object>
+      <object class="sizeritem">
+        <object class="wxTextCtrl" name="FirstArg"/>
+        <flag>wxEXPAND</flag>
+      </object>
+      <object class="sizeritem">
+        <object class="wxStaticText">
+          <label>Second arg:</label>
+        </object>
+        <flag>wxALIGN_CENTRE_VERTICAL</flag>
+      </object>
+      <object class="sizeritem">
+        <object class="wxTextCtrl" name="SecondArg"/>
+        <flag>wxEXPAND</flag>
+      </object>
+      <object class="sizeritem">
+        <object class="wxStaticText">
+          <label>Result:</label>
+        </object>
+        <flag>wxALIGN_CENTRE_VERTICAL</flag>
+      </object>
+      <object class="sizeritem">
+        <object class="wxTextCtrl" name="Result"/>
+        <flag>wxEXPAND</flag>
+      </object>
+      <cols>2</cols>
+      <rows>2</rows>
+      <vgap>2</vgap>
+      <hgap>2</hgap>
+      <growablecols>1</growablecols>
+      <growablerows></growablerows>
+    </object>
+  </object>
+</resource>

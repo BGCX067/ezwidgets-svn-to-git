@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resource>
+  <object class="wxPanel" name="mypanel">
+    <object class="wxFlexGridSizer">
+      <object class="sizeritem">
+        <object class="wxStaticText" name="label1">
+          <label>Float number:</label>
+        </object>
+        <flag>wxALIGN_CENTRE_VERTICAL</flag>
+      </object>
+      <object class="sizeritem">
+        <object class="wxTextCtrl" name="text1">
+          <XRCED>
+            <events>EVT_TEXT_ENTER</events>
+          </XRCED>
+        </object>
+        <option>0</option>
+        <flag>wxEXPAND</flag>
+      </object>
+      <object class="sizeritem">
+        <object class="wxStaticText" name="label2">
+          <label>Text:</label>
+        </object>
+        <flag>wxALIGN_CENTRE_VERTICAL</flag>
+      </object>
+      <object class="sizeritem">
+        <object class="wxTextCtrl" name="text2">
+          <XRCED>
+            <events>EVT_TEXT_ENTER</events>
+          </XRCED>
+        </object>
+        <option>0</option>
+        <flag>wxEXPAND</flag>
+      </object>
+      <object class="sizeritem">
+        <object class="wxCheckBox" name="ch1">
+          <label>Check</label>
+          <XRCED>
+            <events>EVT_CHECKBOX</events>
+          </XRCED>
+        </object>
+        <flag>wxALIGN_CENTRE_VERTICAL</flag>
+      </object>
+      <object class="sizeritem">
+        <object class="wxSlider" name="slider1">
+          <value>0</value>
+          <min>-5</min>
+          <max>5</max>
+          <XRCED>
+            <events>EVT_SCROLL</events>
+          </XRCED>
+        </object>
+        <option>1</option>
+        <flag>wxEXPAND</flag>
+      </object>
+      <object class="sizeritem">
+        <object class="wxStaticText" name="text3">
+          <label>A list box:</label>
+        </object>
+        <flag>wxALIGN_CENTRE_VERTICAL</flag>
+      </object>
+      <object class="sizeritem">
+        <object class="wxListBox" name="listbox1">
+          <content>
+            <item>Choice 1</item>
+            <item>Choice 2</item>
+            <item>Choice 3</item>
+          </content>
+          <selection>1</selection>
+          <XRCED>
+            <events>EVT_LISTBOX</events>
+          </XRCED>
+        </object>
+        <option>1</option>
+        <flag>wxEXPAND</flag>
+      </object>
+      <object class="sizeritem">
+        <object class="wxStaticText" name="text4">
+          <label>A combo box:</label>
+        </object>
+        <flag>wxALIGN_CENTRE_VERTICAL</flag>
+      </object>
+      <object class="sizeritem">
+        <object class="wxComboBox" name="combo1">
+          <content>
+            <item>Choice 1</item>
+            <item>Choice 2</item>
+            <item>Choice 3</item>
+          </content>
+          <selection>0</selection>
+          <style>wxCB_READONLY</style>
+          <XRCED>
+            <events>EVT_COMBOBOX|EVT_TEXT|EVT_TEXT_ENTER</events>
+          </XRCED>
+        </object>
+        <option>0</option>
+        <flag>wxEXPAND</flag>
+      </object>
+      <object class="sizeritem">
+        <object class="wxStaticText" name="text5">
+          <label>A choice box:</label>
+        </object>
+        <flag>wxALIGN_CENTRE_VERTICAL</flag>
+      </object>
+      <object class="sizeritem">
+        <object class="wxChoice" name="choice1">
+          <content>
+            <item>Choice 1</item>
+            <item>Choice 2</item>
+            <item>Choice 3</item>
+          </content>
+          <selection>0</selection>
+        </object>
+        <flag>wxEXPAND</flag>
+      </object>
+      <object class="sizeritem">
+        <object class="wxStaticText" name="text6">
+          <label>A spin ctrl:</label>
+        </object>
+        <flag>wxALIGN_CENTRE_VERTICAL</flag>
+      </object>
+      <object class="sizeritem">
+        <object class="wxSpinCtrl" name="sp1">
+          <min>0</min>
+          <max>255</max>
+          <XRCED>
+            <events>EVT_SPINCTRL</events>
+          </XRCED>
+        </object>
+        <flag>wxEXPAND</flag>
+      </object>
+      <object class="sizeritem">
+        <object class="wxStaticText" name="text7">
+          <label>Radiobox:</label>
+        </object>
+        <flag>wxALIGN_CENTRE_VERTICAL</flag>
+      </object>
+      <object class="sizeritem">
+        <object class="wxRadioBox" name="rb1">
+          <dimension>3</dimension>
+          <content>
+            <item>one</item>
+            <item>two</item>
+            <item>three</item>
+            <item>four</item>
+            <item>five</item>
+            <item>six</item>
+            <item>seven</item>
+            <item>eight</item>
+            <item>nine</item>
+          </content>
+          <dimension>3</dimension>
+          <style>wxNO_BORDER</style>
+        </object>
+        <flag>wxEXPAND</flag>
+      </object>
+      <object class="sizeritem">
+        <object class="wxStaticText" name="text7">
+          <label>Checklistbox:</label>
+        </object>
+        <flag>wxALIGN_CENTRE_VERTICAL</flag>
+      </object>
+      <object class="sizeritem">
+        <object class="wxCheckListBox" name="clb1">
+          <size>-1,50</size>
+          <content>
+            <item checked="1">one</item>
+            <item checked="1">two</item>
+            <item checked="1">three</item>
+            <item checked="1">four</item>
+            <item checked="1">five</item>
+            <item checked="1">six</item>
+            <item checked="1">seven</item>
+            <item checked="1">eight</item>
+            <item checked="1">nine</item>
+          </content>
+          <style>wxLB_MULTIPLE</style>
+        </object>
+        <option>0</option>
+        <flag>wxEXPAND</flag>
+      </object>
+      <object class="sizeritem">
+        <object class="wxButton" name="button">
+          <label>Submit</label>
+          <XRCED>
+            <events>EVT_BUTTON</events>
+          </XRCED>
+        </object>
+      </object>
+      <cols>2</cols>
+      <rows>4</rows>
+      <vgap>5</vgap>
+      <hgap>5</hgap>
+      <growablecols>1</growablecols>
+    </object>
+  </object>
+
+  
+</resource>

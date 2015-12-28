@@ -1,0 +1,280 @@
+#summary wxPython panel creation using xrc and an xrc mixin.
+#labels wxPython,XRC,mixin
+ 
+= Introduction =
+
+Here is the problem this wiki attempts to solve: I often need to build complicated wxPython panels with loads of controls, spins, buttons, the values of which I only need to know when I press a hypothetical _submit_ button. The XRC resource editor (xrced) is great for building the panels and some of the boilerplate python logic.
+
+The mixin described here takes care of returning the values of all the controls in the panel as a dictionary, through a single method called `GetValues()`. This method can also be used for returning values via custom events.
+
+=Step 0: An actual example=
+
+For a complete example (main frame, menubar, one panel), please refer to the XrcCalc page, a rewrite of the [http://wiki.wxpython.org/UsingXmlResources UsingXmlResources] wxPython tutorial code.
+
+= Step 1: The XRC resource editor =
+
+==Files needed==
+[http://ezwidgets.googlecode.com/svn/trunk/xrcmixin/gui.xrc gui.xrc]
+
+==What to watch out for==
+
+Make sure that any event you want handled are ticked:
+
+[http://ezwidgets.googlecode.com/svn/pics/xrced3.png]
+[http://ezwidgets.googlecode.com/svn/pics/xrced4_annotations.png]
+
+This will create the
+{{{
+...
+self.Bind(wx.EVT_BUTTON, self.OnButton_button, id=xrc.XRCID('button')
+...
+}}}
+lines in the [http://ezwidgets.googlecode.com/svn/trunk/xrcmixin/gui_xrc.py gui_xrc.py] file (when dealing with the xrc file [http://ezwidgets.googlecode.com/svn/trunk/xrcmixin/gui.xrc gui.xrc]). The file is exported from File - Generate Python...
+
+[http://ezwidgets.googlecode.com/svn/pics/xrced2_annotations.png]
+
+= Step 2: xrcMixin.py =
+
+==Files needed==
+[http://ezwidgets.googlecode.com/svn/trunk/xrcmixin/xrcMixin.py xrcMixin.py]
+
+==Code==
+Initial version of the xrcMixin.xrcMixin class follows:
+{{{
+import wx
+import wx.lib.newevent
+
+DebugEvent, EVT_DEBUG = wx.lib.newevent.NewEvent()
+
+class xrcMixin():
+    def __init__(self,debug=False,InspectionTool=None):
+
+        self.dict = {}
+        for ctrl in self.GetChildren():
+            name = ctrl.GetName()
+            if name != "-1":
+                setattr(self,name,ctrl)
+                self.dict[name]=ctrl
+
+        self.InspectionTool = InspectionTool
+        self.SetDebug(debug)
+
+    def SetDebug(self,debug):
+        """Set the debug level.
+
+        0 disables debugging output, 1 enables it (on panel double-click).
+        """
+
+        self.debug = debug
+
+        if debug == 0:
+            return
+
+        #dealing with multiple names
+        dict = {}
+        is_multiple = 0
+        s = "Multiple names:\n"
+        for ctrl in self.GetChildren():
+            name = ctrl.GetName()
+
+            if name != "-1":
+                ctrl.SetToolTip(wx.ToolTip(name))
+
+                if name in dict.keys():
+                    s+="\n%s" % name
+                    is_multiple = 1
+
+                dict[name]=1
+
+        if is_multiple == 1:
+            wx.MessageBox(s, '%s debug' % self.__class__.__name__)
+
+        #binding a custom debug event
+        self.Bind(wx.EVT_LEFT_DCLICK,self.OnDebug)
+
+    def GetValues(self):
+        """Values from panel controls
+
+        Scans controls in the panels and returns the values as a dictionary
+        @return a dictionary of the control values
+        """
+        dict = {}
+        for key,ctrl in self.dict.items():
+            methods = ctrl.__class__.__dict__.keys()
+            if 'GetValue' in methods:
+                dict[key]=ctrl.GetValue()
+            elif 'GetSelections' in methods:
+                dict[key]=ctrl.GetSelections()
+            elif 'GetSelection' in methods:
+                dict[key]=ctrl.GetSelection()
+            elif 'GetCurrentSelection' in methods:
+                dict[key]=ctrl.GetCurrentSelection()
+        return dict
+
+    def OnDebug(self,evt):
+        if self.InspectionTool is None:
+            s = "Control values:\n"
+            for key,value in self.GetValues().items():
+                s+="\n%s: %s" % (key,str(value))
+            wx.MessageBox(s, '%s debug' % self.__class__.__name__)
+        else:
+            self.InspectionTool.Show(self)
+
+        debug_event = DebugEvent( GetValues = self.GetValues)
+        wx.PostEvent(self, debug_event)
+
+        evt.Skip()
+}}}
+
+= Step 3: Making a panel =
+
+==Files needed==
+These are essentials: [http://ezwidgets.googlecode.com/svn/trunk/xrcmixin/xrcMixin.py xrcMixin.py]
+
+These will be produced by xrced: [http://ezwidgets.googlecode.com/svn/trunk/xrcmixin/gui.xrc gui.xrc] [http://ezwidgets.googlecode.com/svn/trunk/xrcmixin/gui_xrc.py gui_xrc.py]
+
+These are related to the example below: [http://ezwidgets.googlecode.com/svn/trunk/xrcmixin/validator.py validator.py] [http://ezwidgets.googlecode.com/svn/trunk/xrcmixin/gui.py gui.py]
+
+==What does the code do?==
+The following example uses a validator (provided in the repository) to change the behaviour of the text controls.
+
+The actual panel creation code follows:
+{{{
+class TestPanel(xrcMixin.xrcMixin,gui_xrc.xrcmypanel):
+    def __init__(self, *args, **kwargs):
+
+        #initialising both the xrc panel we want (panel) and the xrcPanel class
+        gui_xrc.xrcmypanel.__init__(self,*args, **kwargs)
+        xrcMixin.xrcMixin.__init__(self,debug=1, InspectionTool = wx.lib.inspection.InspectionTool())
+
+        #adding the validators...
+        self.text1.Validator = validator.CharValidator(validator.FLOAT_DIGITS) 
+        self.text2.Validator = validator.CharValidator(validator.LETTERS) 
+
+    def OnButton_button(self, evt):
+        update_event = UpdateEvent( GetValues = self.GetValues)
+        wx.PostEvent(self, update_event)
+}}}
+
+A few things can be noticed:
+  * The panel is called _mypanel_ in [http://ezwidgets.googlecode.com/svn/trunk/xrcmixin/gui.xrc gui.xrc], so the generated wxPanel code is called _xrcmypanel_ in the [http://ezwidgets.googlecode.com/svn/trunk/xrcmixin/gui_xrc.py gui_xrc.py] file.
+  * The `xrcMixin` is initialised after the the xrcmypanel
+  * Validators can then added (The gui_xrc code creates instances for every controls automatically)
+  * Events are dealt with simply by overriding existing Event method (such as the `OnButton_button` method).
+  * Various events can be generated in order for the rest of the application to communicate with the panel (for instance, when changes in the panel are meant to trigger other parts of the application).
+  * When we do this, we add the `GetValues()` method to the event, so that the controls can values can be easily read.
+
+Now for the complete [http://ezwidgets.googlecode.com/svn/trunk/xrcmixin/gui.py gui.py] example:
+
+{{{
+import wx
+import wx.lib.newevent
+import wx.lib.inspection
+
+import gui_xrc
+import xrcMixin
+import validator
+
+UpdateEvent, EVT_UPDATE = wx.lib.newevent.NewEvent()
+
+#==============================================================================
+class TestPanel(xrcMixin.xrcMixin,gui_xrc.xrcmypanel):
+    def __init__(self, *args, **kwargs):
+
+        #initialising both the xrc panel we want (panel) and the xrcPanel class
+        gui_xrc.xrcmypanel.__init__(self,*args, **kwargs)
+        xrcMixin.xrcMixin.__init__(self,debug=1, InspectionTool = wx.lib.inspection.InspectionTool())
+
+        #adding the validators...
+        self.text1.Validator = validator.CharValidator(validator.FLOAT_DIGITS) 
+        self.text2.Validator = validator.CharValidator(validator.LETTERS) 
+
+    def OnButton_button(self, evt):
+        update_event = UpdateEvent( GetValues = self.GetValues)
+        wx.PostEvent(self, update_event)
+
+#==============================================================================
+class TestFrame(wx.Frame):
+    def __init__(self, *args, **kwargs):
+        """
+        Class constructor
+
+        @param args: Arguments
+        @param kwargs: Keyword Arguments
+        """
+        wx.Frame.__init__(self, *args, **kwargs)
+        self.CreateStatusBar()
+
+        p = TestPanel(self)
+        p.Bind(EVT_UPDATE, self.OnUpdate)
+
+    def OnUpdate(self,evt):
+        """
+        Catches the update events
+
+        @param evt The event 
+        """
+        s = "Values:\n"
+        for key,value in evt.GetValues().items():
+            s+="\n%s: %s" % (key,str(value))
+        wx.MessageBox(s, 'Feedback')
+
+class TestApp(wx.App):
+    def OnInit(self):
+        f = TestFrame(None,title="Test frame", size=(300,480))
+        f.Show()
+        self.SetTopWindow(f)
+        return True
+
+#==============================================================================
+if __name__ == '__main__':
+    app = TestApp(False)
+    app.MainLoop()
+}}}
+
+==Screenshots==
+
+[http://ezwidgets.googlecode.com/svn/pics/gui1.png]
+[http://ezwidgets.googlecode.com/svn/pics/gui2.png]
+
+The float validator doesn't really work by the way!
+
+= Step 4: Debugging =
+
+== Initialisation ==
+A debug option can be passed to `xrcMixin` during its initialisation. An optional `InspectionTool` instance can also be passed to use as a debugging console.
+
+For instance, this is how `xrcMixin` is initialised in [http://ezwidgets.googlecode.com/svn/trunk/xrcmixin/gui.py gui.py]:
+{{{
+xrcMixin.xrcMixin.__init__(self, debug=1, InspectionTool = wx.lib.inspection.InspectionTool())
+}}}
+
+== Implemented so far ==
+
+When running the panel, `xrcMixin` checks for duplicate names and will pop-up a message box if any are found:
+
+[http://ezwidgets.googlecode.com/svn/pics/debug1.png]
+
+This is important because we return a dictionary of values which uses the control names as keys. If a name is used multiple times, then the control value gets overwritten in the returned dictionary. Remember, if you don't want a control to return a value, simply don't give it a name!
+
+Other trics performed:
+  * Changes the tooltips of each and every control to the xrc control name.
+  * When double clicking on the panel, a debug panel pops-up. If an Inspection Tool is provided, this will be used, otherwise a message box is shown, which lists the name and value of all the controls in the panel.
+  * A custom EVT_DEBUG event is generated.
+
+== The debug console ==
+
+When the inspection tool is provided, double-clicking on the panel brings-up the console:
+
+[http://ezwidgets.googlecode.com/svn/pics/inspection_tool.png]
+
+Panel values are accessed by typing in the console (when panel is selected):
+
+{{{
+obj.GetValues()
+}}}
+
+=Conclusion=
+That's it! Hope this was useful. And as usual, any comments welcome.
+
+Oh and anything else the mixin class could do, I'd be interested to know!

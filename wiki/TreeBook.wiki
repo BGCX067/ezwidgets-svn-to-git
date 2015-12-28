@@ -1,0 +1,11 @@
+#summary Treebook widget (wizard + tree)
+
+= Introduction =
+
+I can't remember where I saw this widget and thought it was a really good idea. Maybe it was in "Powertoys for Windows XP". I think some old Redhat installs had something similar too.
+
+Basically, one can quickly find a section using the tree, or start from the first one and move to the next page using the buttons.
+
+= Details =
+
+*TODO* Will add some content here...

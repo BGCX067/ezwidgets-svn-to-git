@@ -1,0 +1,39 @@
+#summary IconBar shows a small icon with two bars in the taskbar.
+
+= Introduction =
+
+IconBar shows a small icon with two bars in the taskbar.
+
+
+This is how it looks like in Ubuntu:
+
+[http://ezwidgets.googlecode.com/svn/pics/iconbar_ubuntu.png]
+
+And this is how it looks like in Windows XP:
+
+[http://ezwidgets.googlecode.com/svn/pics/iconbar.png]
+
+= Details =
+
+Two things I found a bit of a bother:
+
+wx.Icon doesn't expose the SetData() method, so the only way is to generate an image, then convert it to a bitmap then to an icon.
+
+Windows insists on the icons being 16x16. If your icon is somewhat smaller than that (like mine was 15x16) you will need to pad it with a transparent colour.
+
+The trick is to select a colour you will use for transparency, white in my case. then do
+{{{
+image = wx.EmptyImage(16,16)
+image.SetData(s)
+bmp = image.ConvertToBitmap()
+bmp.SetMask(wx.Mask(bmp, wx.WHITE)) #sets the transparency colour to white
+icon = wx.EmptyIcon()
+icon.CopyFromBitmap(bmp)
+}}}
+
+The SetMask() makes the bitmap transparent where the pixels are white. Good news is, transparency is also transferred to the icon.
+
+
+Code available from SVN: [http://ezwidgets.googlecode.com/svn/trunk/lutctrl/]
+
+First published here: [http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/475155]

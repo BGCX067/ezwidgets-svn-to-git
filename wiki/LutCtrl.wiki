@@ -1,0 +1,61 @@
+#summary A wxpython control to choose a Look-up table.
+
+= Introduction =
+
+This widget provides controls for the selection of colour scales (lut.ctrl.LutCtrl), the viewing/editing of opacity curves (lut.ctrl.OpacityCtrl) and the selection of histogram ranges (lut.ctrl.HistogramCtrl). A look-up table associated with the colour scale, converts greyscale pixel values between 0 and 255 to R,G,B triplet values. Colour scales are often used in visualisation / image-processing applications, because the eye is more sensitive to colour steps rather than to intensity steps.
+
+The !LutCtrl control can be further modified (addition of a drop-down list control or spin button) via a style keyword.
+
+The Look-up tables themselves were downloaded from http://rsb.info.nih.gov/ij/download/luts/ ([http://rsb.info.nih.gov/ij/download/luts/luts.zip luts.zip] and [http://rsb.info.nih.gov/ij/download/luts/luts2.zip luts2.zip]) and may have a copyright attached. They are part of the Rasband, W.S., ImageJ project, U. S. National Institutes of Health, Bethesda, Maryland, USA. Project homepage located here: http://rsb.info.nih.gov/ij/, 1997-2005.
+
+A simple python converter was written to read the ICOL, raw and ASCII formats. If you need it, drop me a mail.
+
+= Screenshots =
+Enough of the theory, this is what the controls look like (Windows and GTK):
+
+[http://ezwidgets.googlecode.com/svn/pics/lutctrl_xp.png]
+[http://ezwidgets.googlecode.com/svn/pics/lutctrl_linux.png]
+
+Partial list of the luts included: [http://rsb.info.nih.gov/ij/download/luts/LUT_Montage.jpg LUT_Montage.jpg]
+
+= Code =
+Code is split into two files, attachment:lut.ctrl.py and attachment:lut.data.py. Both files are needed.
+
+Compared to earlier versions of the code I have released, this last one has two major adavantages:
+  * lutdata/lutctrl do not rely on any numeric library anymore. '''New version relies on wx, though...'''
+  * lut controls generate events from which lut data is easily obtained.
+
+At the cost of a slight increase in filesize, look-up tables are now stored in s="RGBRGBRGB..." interleaved strings, which are easy to convert back to separate r,g,b: r=s[0::3], g=s[1::3], b=s[2::3]. These in turn may be converted to numeric arrays. For instance, using the numpy library, one would write:
+
+== using lower level lutdata methods ==
+*Need to update the instructions... these are probably out of date...*
+
+{{{
+Python 2.5.1 (r251:54863, Apr 18 2007, 08:51:08) [MSC v.1310 32 bit (Intel)] on
+win32
+Type "help", "copyright", "credits" or "license" for more information.
+>>> import lutdata
+>>> import numpy
+>>> l = lutdata.LutData()
+>>> r,g,b = l.get_rgb(0)
+>>> r_array = numpy.array(r,numpy.uint8)
+>>> g_array = numpy.array(g,numpy.uint8)
+>>> b_array = numpy.array(b,numpy.uint8)
+}}}
+
+== using lutctrl methods ==
+{{{
+r,g,b = MyLutChoice.GetRGB(0) # get the greyscale values...
+r_array = numpy.array(r,numpy.uint8)
+g_array = numpy.array(g,numpy.uint8)
+b_array = numpy.array(b,numpy.uint8)
+}}}
+
+Note that the GetRGB() method is also available through lutctrl events.
+
+== complete test example (test_lutctrl.py) ==
+
+This test code imports lutctrl:
+
+= Library code =
+Code available here: attachment:lutctrl.py and attachment:lutdata.py
